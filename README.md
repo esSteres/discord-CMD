@@ -29,6 +29,10 @@ bc.registerCommand(new Command("example", "arg1, arg2", "an example command", Pe
 The value returned by `processMessage` will be sent to the channel that the bot recived the command invocation from. For no response, return `null`.
 
 
+### MessageTypeCommand
+An extension of command that can be configured to respond differently depending on wether the command was recieved as a private or server message. Like with Command, it is built to be extended as an anonymous class and have `processDM`, `processServerMessage`, or both overridden.
+
+
 ### PermissionLevel
 A set of Discord role IDs which represent all the roles which classify a user as being part of the permission level. Given to a Command to determine who can use it. You can dynamically edit these with the add/remove methods if you maintain a refrence, since Command objects do not clone them.
 
