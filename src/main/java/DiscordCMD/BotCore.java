@@ -104,6 +104,14 @@ public class BotCore extends ListenerAdapter {
         this.commands.put(newCommand.getName(), newCommand);
     }
 
+    public void removeCommand (String name) {
+        this.commands.remove(name);
+    }
+
+    public void removeCommand (Command command) {
+        this.commands.remove(command);
+    }
+
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }

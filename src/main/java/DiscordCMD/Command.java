@@ -65,4 +65,28 @@ public abstract class Command {
         }
         return false;
     }
+
+    public void addPermission (PermissionLevel newPermission) {
+        this.allowedUsers.add(newPermission);
+    }
+
+    public void addAllPermissions (PermissionLevel... newPermissions) {
+        this.allowedUsers.addAll(Arrays.asList(newPermissions));
+    }
+
+    public void addAllPermissions (Collection<PermissionLevel> newPermissions) {
+        this.allowedUsers.addAll(newPermissions);
+    }
+
+    public void removePermission (PermissionLevel oldPermission) {
+        this.allowedUsers.remove(oldPermission);
+    }
+
+    public void removeAllPermissions (PermissionLevel... oldPermissions) {
+        this.allowedUsers.removeAll(Arrays.asList(oldPermissions));
+    }
+
+    public void removeAllPermissions (Collection<PermissionLevel> oldPermissions) {
+        this.allowedUsers.removeAll(oldPermissions);
+    }
 }
