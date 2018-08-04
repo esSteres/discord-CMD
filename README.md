@@ -35,6 +35,7 @@ An extension of command that can be configured to respond differently depending 
 
 ### PermissionLevel
 A set of Discord role IDs which represent all the roles which classify a user as being part of the permission level. Given to a Command to determine who can use it. You can dynamically edit these with the add/remove methods if you maintain a refrence, since Command objects do not clone them.
+For a command that should be usable by everyone, use `PermissionLevel.EVERYONE`.
 
 
 ### MessageEvent
