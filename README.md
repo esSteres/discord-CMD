@@ -10,7 +10,7 @@ A BotCore is-a ListenerAdapter, and can be extended to override any methods of a
 ## Object Refrence
 
 ### BotCore
-The core object of Discord-CMD - create a BotCore and call `registerCommand`, which takes any Command object and adds it to the set of commands which the bot will respond to. When the bot recieves a message that begins with the configured prefix, it will attempt to match it against one of its commands. Automatically contains a "help" command, which will update itself with each new command added, and will display only the commands the invoking user is authorized to use.
+The core object of Discord-CMD - create a BotCore and call `registerCommand`, which takes any Command object and adds it to the set of commands which the bot will respond to. When the bot recieves a message that begins with the configured prefix, it will attempt to match it against one of its commands. Automatically contains a "help" command, which will update itself with each new command added, and will display only the commands the invoking user is authorized to use. To start the bot running, call `start()`.
 
 
 ### Command
@@ -29,7 +29,7 @@ bc.registerCommand(new Command("example", "arg1, arg2", "an example command", Pe
 The value returned by `processMessage` will be sent to the channel that the bot recived the command invocation from. For no response, return `null`.
 
 
-If you want to refer to the currently set prefix in your usage information, use `"%prefix%"` - it will be replaced wiht the configured prefix when the info needs to be printed
+If you want to refer to the currently set prefix in your usage information, use `"%prefix%"` - it will be replaced with the currently configured prefix when the info needs to be printed.
 
 
 ### MessageTypeCommand
