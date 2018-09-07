@@ -13,7 +13,7 @@ public abstract class MessageTypeCommand extends Command {
     }
 
     @Override
-    protected String processMessage (Scanner args, MessageEvent message) {
+    protected String processMessage (Scanner args, MessageEvent message) throws IllegalCommandArgumentException {
         if (message.isPrivateMessage()) {
             return this.processDM(args, message);
         } else {
@@ -21,11 +21,11 @@ public abstract class MessageTypeCommand extends Command {
         }
     }
 
-    protected String processDM (Scanner args, MessageEvent message) {
+    protected String processDM (Scanner args, MessageEvent message) throws IllegalCommandArgumentException {
         return "You can't do that in DMs, use a server.";
     }
 
-    protected String processServerMessage (Scanner args, MessageEvent message) {
+    protected String processServerMessage (Scanner args, MessageEvent message) throws IllegalCommandArgumentException {
         return "You can't do that in a server, use DMs.";
     }
 }
