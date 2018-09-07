@@ -29,7 +29,11 @@ public abstract class Command {
         String reply;
 
         if (this.authenticate(message)) {
-            reply = this.processMessage(args, message);
+            try {
+                reply = this.processMessage(args, message);
+            } catch (IllegalCommandArgumentException e) {
+                reply = e.getMessage();
+            }
         } else {
             reply = "You don't have permission to do that.";
         }
@@ -39,7 +43,7 @@ public abstract class Command {
         }
     }
 
-    abstract protected String processMessage (Scanner args, MessageEvent message);
+    abstract protected String processMessage (Scanner args, MessageEvent message) throws IllegalCommandArgumentException;
 
     protected String getUsage(String prefix) {
         return this.usage.replaceAll("%prefix%", prefix);
