@@ -28,7 +28,7 @@ public class BotCore extends ListenerAdapter {
                 "Lists all commands. Use %prefix%help [command name] for more detailed usage information.",
                 PermissionLevel.EVERYONE) {
             @Override
-            protected String processMessage (Scanner args, MessageEvent message) {
+            protected String processMessage (Scanner args, MessageEvent message) throws IllegalCommandArgumentException {
                 if (args.hasNext()) {
                     String command = args.next();
                     if (command.length() > prefix.length() && command.substring(0, prefix.length()).equals(prefix)) {
