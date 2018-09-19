@@ -6,6 +6,11 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 
+/**
+ * A little bolt-on to JDA to be able to pass MessageReceived and MessageUpdate events to the same methods.
+ *
+ * (hey JDA can this be an interface please?)
+ */
 public class MessageEvent {
     private Message message;
     private User author;

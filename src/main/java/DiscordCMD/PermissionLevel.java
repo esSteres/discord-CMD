@@ -5,7 +5,15 @@ import net.dv8tion.jda.core.entities.Role;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
+/**
+ * Represents a set of roles which have the same level of permissions. Any user with at least one role which is a member
+ * of a PermissionLevel is considered to be authorized for that level. A PermissionLevel dynamically contains all the
+ * roles of its supersets.
+ *
+ * For a command which should be usable by everyone, use {@code PermissionLevel.EVERYONE}.
+ */
 public class PermissionLevel {
 
     public static final PermissionLevel EVERYONE = new PermissionLevel() {
@@ -18,10 +26,14 @@ public class PermissionLevel {
         public void removeRole (String roleID) {}
     };
 
-    private HashSet<String> roleIDs;
+    private Set<String> roleIDs;
+
+    private
+    Set<PermissionLevel> superSets;
 
     public PermissionLevel () {
         roleIDs = new HashSet<>();
+        superSets = new HashSet<>();
     }
 
     public PermissionLevel (Collection<String> roles) {
@@ -46,6 +58,11 @@ public class PermissionLevel {
                 return true;
             }
         }
+        for (PermissionLevel sup: superSets) {
+            if (sup.contains(roles)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -63,5 +80,21 @@ public class PermissionLevel {
 
     public void removeRole (Role role) {
         this.removeRole(role.getId());
+    }
+
+    public void addSubSet (PermissionLevel other) {
+        other.addSuperSet(this);
+    }
+
+    public void addSuperSet (PermissionLevel other) {
+        this.superSets.add(other);
+    }
+
+    public void removeSubSet (PermissionLevel other) {
+        other.removeSuperSet(this);
+    }
+
+    public void removeSuperSet (PermissionLevel other) {
+        this.superSets.remove(other);
     }
 }

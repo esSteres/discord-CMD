@@ -1,26 +1,30 @@
 package DiscordCMD;
 
-import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.*;
 
+/**
+ * Core class for command management. Methods can be overridden as ListenerAdapter, save for onMessageReceived and
+ * onMessageUpdate, which should instead be altMessageReceived and altMessageUpdate, which are invoked if no command
+ * is detected.
+ */
 public class BotCore extends ListenerAdapter {
     private String prefix = "!";
-    private JDA api;
+    private JDA self;
 
-    private LinkedHashMap<String, Command> commands;
+    private Map<String, Command> commands;
 
-    public BotCore(String token) throws IllegalArgumentException {
-        try {
-            api = new JDABuilder(AccountType.BOT).setToken(token).buildAsync();
-        } catch (javax.security.auth.login.LoginException e) {
-            throw new IllegalArgumentException("Invalid token provided. It may be expired or the account deleted.");
-        }
+    /**
+     * Creates a new BotCore connected to the account associated with the given token.
+     *
+     * @param self a JDA object with to which this listener will be attached
+     */
+    public BotCore(JDA self) {
+        this.self = self;
 
         this.commands = new LinkedHashMap<>();
 
@@ -55,35 +59,27 @@ public class BotCore extends ListenerAdapter {
 
     @Override
     public void onMessageReceived (MessageReceivedEvent event) {
-        if (this.processMessage(new MessageEvent(event))) {
-            this.altMessageRecieved(event);
-        }
+        this.processMessage(new MessageEvent(event));
     }
-
-    public void altMessageRecieved (MessageReceivedEvent event) {}
 
     @Override
     public void onMessageUpdate (MessageUpdateEvent event) {
-        if (this.processMessage(new MessageEvent(event))) {
-            this.altMessageUpdate(event);
-        }
+        this.processMessage(new MessageEvent(event));
     }
 
-    public void altMessageUpdate (MessageUpdateEvent event) {}
-
-    private boolean processMessage (MessageEvent event) {
-        if (event.getAuthor().isBot()) return true;
+    private void processMessage (MessageEvent event) {
+        if (event.getAuthor().isBot()) return;
         // We don't want to respond to other bot accounts, including us
 
         String content = event.getMessage().getContentRaw();
 
         //detect commands
-        if (event.getMessage().getMentionedUsers().contains(api.getSelfUser())) {
+        if (event.getMessage().getMentionedUsers().contains(self.getSelfUser())) {
             content = content.substring(content.indexOf(" "));
         } else if (content.length() >= prefix.length() && content.substring(0, prefix.length()).equals(prefix)) {
             content = content.substring(prefix.length());
         } else {
-            return true;
+            return;
         }
 
         // split up the message and process it
@@ -96,35 +92,59 @@ public class BotCore extends ListenerAdapter {
             event.getMessage().getChannel().sendMessage("Command not recognized - use " + prefix +
                     "help for a list of commands.").queue();
         }
-
-        return false;
     }
 
+    /**
+     * Adds the given command to the set of commands this BotCore can execute
+     * @param newCommand the Command to add
+     */
     public void registerCommand (Command newCommand) {
         this.commands.put(newCommand.getName(), newCommand);
     }
 
+    /**
+     * Removes a command from the set this BotCore can execute by name
+     * @param name the name of the Command to remove
+     */
     public void removeCommand (String name) {
         this.commands.remove(name);
     }
 
+    /**
+     * Removes a command from the set this BotCore can execute
+     * @param command the Command to remove
+     */
     public void removeCommand (Command command) {
         this.commands.remove(command);
     }
 
-    public Command getCommand(String command) {
-        return this.commands.get(command);
+    /**
+     * Returns the named command, if it is in the set of commands this bot has
+     * @param command the name of the command to return
+     * @return the command with the associated name
+     * @throws IllegalArgumentException if there si no such command with the given name
+     */
+    public Command getCommand(String command) throws IllegalArgumentException {
+        if (this.commands.containsKey(command)) {
+            return this.commands.get(command);
+        } else {
+            throw new IllegalArgumentException("No such command");
+        }
     }
 
+    /**
+     * Sets the prefix that the bot will use to detect a command invocation
+     * @param prefix the new prefix
+     */
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
 
+    /**
+     * returns the prefix being used to detect commands
+     * @return the current prefix
+     */
     public String getPrefix() {
         return this.prefix;
-    }
-
-    public void start() {
-        api.addEventListener(this);
     }
 }
