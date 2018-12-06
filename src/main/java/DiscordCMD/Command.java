@@ -34,7 +34,7 @@ public abstract class Command {
         this(name, template, info, Arrays.asList(allowedUsers));
     }
 
-    void execute (Scanner args, MessageEvent message) {
+    void execute (Scanner args, MessageEvent message, String prefix) {
         args.useDelimiter("\\s*,\\s*");
         args.skip("\\s*");
 
@@ -51,12 +51,13 @@ public abstract class Command {
         }
 
         if (reply != null) {
+            reply.replaceAll("%prefix%", prefix);
             message.getMessage().getChannel().sendMessage(reply).queue();
         }
     }
 
     /**
-     * The relevant method to override when creating a new command
+     * The relevant method to override when creating a new command.
      * @param args a scanner of strings containing the arguments to the command
      * @param message the message object that caused execution
      * @return the string to be displayed to the user

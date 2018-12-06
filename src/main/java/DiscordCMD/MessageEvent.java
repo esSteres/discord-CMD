@@ -9,7 +9,7 @@ import net.dv8tion.jda.core.events.message.MessageUpdateEvent;
 /**
  * A little bolt-on to JDA to be able to pass MessageReceived and MessageUpdate events to the same methods.
  *
- * (hey JDA can this be an interface please?)
+ * (because the only common superclass is too general, and I don't want to double every method).
  */
 public class MessageEvent {
     private Message message;
@@ -36,6 +36,10 @@ public class MessageEvent {
         return this.author;
     }
 
+    /**
+     * Will return null if this is a private message, i.e. isPrivateMessage returns true.
+     * @return the Member associated with the message
+     */
     public Member getMember () {
         return this.member;
     }

@@ -86,7 +86,7 @@ public class BotCore extends ListenerAdapter {
         Scanner args = new Scanner(content);
         String command = args.next().toLowerCase();
         if (this.commands.containsKey(command)) {
-            this.commands.get(command).execute(args, event);
+            this.commands.get(command).execute(args, event, prefix);
         }
         else {
             event.getMessage().getChannel().sendMessage("Command not recognized - use " + prefix +
